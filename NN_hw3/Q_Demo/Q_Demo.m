@@ -228,11 +228,11 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             figure(h2);
             title('Q-value mesh : up is push right, bottom is push left');
             for i=1:2
-                st=1;
+                m=1;
                 for j=1:9
                     for k=1:18
-                        GZ(j,k)=q_val(st,i)+i;  
-                        st=st+1;
+                        GZ(j,k)=q_val(m,i)+i;  
+                        m=m+1;
                     end % k
                 end  % j
                 surf(GX,GY,GZ);
