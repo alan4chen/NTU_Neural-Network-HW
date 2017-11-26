@@ -194,19 +194,30 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             % Modified for ACE/ASE
             reinf=get(handles.reinf_sl,'Value');
             predicted_value=0;
+            % q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
+
             
-            box=get_box(x,v_x,theta,v_theta);
-            x_vec = zeros(NUM_BOX, 1);
-            if box ~= -1
-                x_vec(box) = 1;
-            end
+         %    box=get_box(x,v_x,theta,v_theta);
+         %    x_vec = zeros(NUM_BOX, 1);
+         %    if box ~= -1
+         %        x_vec(box) = 1;
+         %    end
+         %    [reward_hat, p_before] = ACE(BETAACE, 0.8, -1, 0.95, p_before);
+         %    ASE(1000, 0.9, reward_hat);
+         %    p_before = 0;
+
+        	% [pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
+         %    trial=trial+1;
+
+            x_vec = Box(x,v_x,theta,v_theta, NUM_BOX);
             [reward_hat, p_before] = ACE(BETAACE, 0.8, -1, 0.95, p_before);
             ASE(1000, 0.9, reward_hat);
+            %[q_val,v_val] = failed_update(q_val, v_val, pre_state, pre_action, reinf, predicted_value);
+            [pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
+            trial=trial+1;
             p_before = 0;
 
-            % q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
-        	[pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
-            trial=trial+1;
+
             if (success>best)
                 best=success;
             end
