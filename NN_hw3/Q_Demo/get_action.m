@@ -4,7 +4,7 @@ pre_state=cur_state;
 pre_action=cur_action;    % Action: 1 is push left.  2 is push right
 cur_state=get_box(x,v_x,theta,v_theta);
 
-global p_before x_vec;
+global p_before x_vec BOX_DIM;
 
 x_vec = zeros(BOX_DIM, 1);
 if cur_state ~= -1
