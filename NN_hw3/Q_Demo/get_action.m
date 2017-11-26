@@ -6,7 +6,7 @@ cur_state=get_box(x,v_x,theta,v_theta);
 
 global p_before x_vec;
 
-x_vec = zeros(NUM_BOX, 1);
+x_vec = zeros(BOX_DIM, 1);
 if cur_state ~= -1
     x_vec(cur_state) = 1;
 end
