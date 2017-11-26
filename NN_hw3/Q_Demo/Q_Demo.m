@@ -134,6 +134,20 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
 	[GX,GY]=meshgrid(1:18,1:9);
     GZ=zeros(9,18);
     best=0;
+
+    % modifed for ACE / ASE
+
+    global BOX_DIM x_vec w v e x_bar p_before;
+
+    BOX_DIM = 162
+    x_vec = zeros(BOX_DIM, 1); % state vector
+    w = zeros(BOX_DIM);     % action weights
+    v = zeros(BOX_DIM);     % critic weights
+    e = zeros(BOX_DIM);     % action weight eligibilities
+    x_bar = zeros(BOX_DIM); % critic weight eligibilities
+    p_before = 0;
+
+
 	while success<100000
         [q_val,pre_state,pre_action,cur_state,cur_action] = get_action(x,v_x,theta,v_theta,reinf,q_val,pre_state,cur_state,pre_action,cur_action,ALPHA,BETA,GAMMA);
         if (cur_action==1)   % push left
@@ -167,6 +181,16 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
         % get new box
         [box] = get_box(x,v_x,theta,v_theta);
         if (box== -1)  % if fail
+            % Modified for ACE/ASE
+            p_before = 0;
+            box=get_box(x,v_x,theta,v_theta);
+            x_vec = zeros(NUM_BOX, 1);
+            if box ~= -1
+                x_vec(box) = 1;
+            end
+            reward_hat, p_before = ACE(0.5, 0.8, -1, 0.95, p_before);
+            ASE(1000, 0.9, reward_hat);
+
             reinf=get(handles.reinf_sl,'Value');
             predicted_value=0;
             q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
