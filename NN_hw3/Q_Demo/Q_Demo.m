@@ -105,7 +105,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
 	BETA = get(handles.beta_sl,'Value')    % magnitude of noise added to choice 
 	GAMMA = get(handles.alpha_sl,'Value')  % discount factor for future reinf 
     
-    BETAACE = get(handles.beta_ace, 'Value'); % learning rate for ACE
+    % BETAACE = get(handles.beta_ace, 'Value'); % learning rate for ACE
 
     if (get(handles.radiobutton1,'Value')==0)
         BETA=0
@@ -142,6 +142,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     global x_vec w v e x_bar BETAACE p_before BOX_DIM;
 
     p_before = 0;
+    BETAACE=0.5;
 
     BOX_DIM = NUM_BOX;
     v_val=zeros(162,2);
