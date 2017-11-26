@@ -2,16 +2,17 @@ function [q_val,pre_state,pre_action,cur_state,cur_action] = get_action(x,v_x,th
 
 pre_state=cur_state;
 pre_action=cur_action;    % Action: 1 is push left.  2 is push right
+
 cur_state=get_box(x,v_x,theta,v_theta);
 
-global p_before x_vec BOX_DIM;
+global p_before x_vec BOX_DIM BETAACE;
 
 x_vec = zeros(BOX_DIM, 1);
 if cur_state ~= -1
     x_vec(cur_state) = 1;
 end
 
-[reward_hat, p_before] = ACE(0.5, 0.8, 0, 0.95, p_before);
+[reward_hat, p_before] = ACE(BETAACE, 0.8, 0, 0.95, p_before);
 cur_action = ASE(1000, 0.9, reward_hat);
 
 

@@ -1,5 +1,4 @@
 function [reward_hat, p] = ACE(learn, decay, reward, gamma, p_before)
-	% ACE : generate [improved reinforcement signal (reward_hat)]
     global v x_vec x_bar;
     
     if reward == -1

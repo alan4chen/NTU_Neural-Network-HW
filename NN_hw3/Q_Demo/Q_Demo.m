@@ -104,6 +104,9 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     ALPHA = get(handles.alpha_sl,'Value')  % learning rate parameter 
 	BETA = get(handles.beta_sl,'Value')    % magnitude of noise added to choice 
 	GAMMA = get(handles.alpha_sl,'Value')  % discount factor for future reinf 
+    
+    BETAACE = get(handles.beta_ace, 'Value'); % learning rate for ACE
+
     if (get(handles.radiobutton1,'Value')==0)
         BETA=0
     end  %if
@@ -136,20 +139,22 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     best=0;
 
     % modifed for ACE / ASE
+    global x_vec w v e x_bar BETAACE p_before BOX_DIM;
 
-    global BOX_DIM x_vec w v e x_bar p_before;
-
-    BOX_DIM = 162
-    x_vec = zeros(BOX_DIM, 1); % state vector
-    w = zeros(BOX_DIM);     % action weights
-    v = zeros(BOX_DIM);     % critic weights
-    e = zeros(BOX_DIM);     % action weight eligibilities
-    x_bar = zeros(BOX_DIM); % critic weight eligibilities
     p_before = 0;
+
+    BOX_DIM = NUM_BOX;
+    v_val=zeros(162,2);
+    x_vec = zeros(NUM_BOX, 1);
+    w = zeros(NUM_BOX, 1);
+    v = zeros(NUM_BOX, 1);
+    e = zeros(NUM_BOX, 1);
+    x_bar = zeros(NUM_BOX, 1);
 
 
 	while success<100000
         [q_val,pre_state,pre_action,cur_state,cur_action] = get_action(x,v_x,theta,v_theta,reinf,q_val,pre_state,cur_state,pre_action,cur_action,ALPHA,BETA,GAMMA);
+        
         if (cur_action==1)   % push left
             F=-1*Force;
         else  F=Force;    % push right
@@ -182,18 +187,19 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
         [box] = get_box(x,v_x,theta,v_theta);
         if (box== -1)  % if fail
             % Modified for ACE/ASE
-            p_before = 0;
+            reinf=get(handles.reinf_sl,'Value');
+            predicted_value=0;
+            
             box=get_box(x,v_x,theta,v_theta);
             x_vec = zeros(NUM_BOX, 1);
             if box ~= -1
                 x_vec(box) = 1;
             end
-            reward_hat, p_before = ACE(0.5, 0.8, -1, 0.95, p_before);
+            [reward_hat, p_before] = ACE(BETAACE, 0.8, -1, 0.95, p_before);
             ASE(1000, 0.9, reward_hat);
+            p_before = 0;
 
-            reinf=get(handles.reinf_sl,'Value');
-            predicted_value=0;
-            q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
+            % q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
         	[pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
             trial=trial+1;
             if (success>best)
