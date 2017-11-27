@@ -8,26 +8,26 @@ function varargout = Q_Demo(varargin)
 
 if nargin == 0  % LAUNCH GUI
 
-	fig = openfig(mfilename,'reuse');
+    fig = openfig(mfilename,'reuse');
 
-	% Use system color scheme for figure:
-	set(fig,'Color',get(0,'defaultUicontrolBackgroundColor'));
+    % Use system color scheme for figure:
+    set(fig,'Color',get(0,'defaultUicontrolBackgroundColor'));
 
-	% Generate a structure of handles to pass to callbacks, and store it. 
-	handles = guihandles(fig);
-	guidata(fig, handles);
+    % Generate a structure of handles to pass to callbacks, and store it. 
+    handles = guihandles(fig);
+    guidata(fig, handles);
 
     if nargout > 0
-		varargout{1} = fig;
-	end
+        varargout{1} = fig;
+    end
 
 elseif ischar(varargin{1}) % INVOKE NAMED SUBFUNCTION OR CALLBACK
 
-	try
-		[varargout{1:nargout}] = feval(varargin{:}); % FEVAL switchyard
-	catch
-		disp(lasterr);
-	end
+    try
+        [varargout{1:nargout}] = feval(varargin{:}); % FEVAL switchyard
+    catch
+        disp(lasterr);
+    end
 
 end
 
@@ -102,40 +102,39 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     opengl autoselect;
     global ALPHA BETA GAMMA
     ALPHA = get(handles.alpha_sl,'Value')  % learning rate parameter 
-	BETA = get(handles.beta_sl,'Value')    % magnitude of noise added to choice 
-	GAMMA = get(handles.alpha_sl,'Value')  % discount factor for future reinf 
+    BETA = get(handles.beta_sl,'Value')    % magnitude of noise added to choice 
+    GAMMA = get(handles.alpha_sl,'Value')  % discount factor for future reinf 
     
     % BETAACE = get(handles.beta_ace, 'Value'); % learning rate for ACE
 
     if (get(handles.radiobutton1,'Value')==0)
         BETA=0
     end  %if
-    st = 1.1;
-	m=1.1;  %mass of cart + pole 
-	mp=0.1; %mass of the pole
-	g=9.8;  %重力加速度
-	length=0.5;  %half length of pole
-	Force=10;   %force =10N
-	T=0.02;  % Update time interval
-	% Define global variable
-	NUM_BOX=162;    % Number of states sets to 162
-   	[pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
-	q_val=zeros(162,2);
-	h1=figure;    % this figure is cart-pole
-	axis([-3 3 0 1.5]);
-	set(gca, 'DataAspectRatio',[1 1 1]);
+    m=1.1;  %mass of cart + pole 
+    mp=0.1; %mass of the pole
+    g=9.8;  %重力加速度
+    length=0.5;  %half length of pole
+    Force=10;   %force =10N
+    T=0.02;  % Update time interval
+    % Define global variable
+    NUM_BOX=162;    % Number of states sets to 162
+    [pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
+    q_val=zeros(162,2);
+    h1=figure;    % this figure is cart-pole
+    axis([-3 3 0 1.5]);
+    set(gca, 'DataAspectRatio',[1 1 1]);
     set(h1, 'Position',[10 100 500 200]);
-	set(h1,'DoubleBuffer','on')
-	set(gca, 'PlotBoxAspectRatio',[1 1 1]);
+    set(h1,'DoubleBuffer','on')
+    set(gca, 'PlotBoxAspectRatio',[1 1 1]);
     h2 = figure;   % this figure is Q-value
     set(h2,'Position',[510 50 400 400]);
     set(h2,'Renderer','OpenGL')
     view(40,-30);
     success=0;   % succesee 0 times
-	reinf=0;
+    reinf=0;
     trial=0;
     % prepare grid for
-	[GX,GY]=meshgrid(1:18,1:9);
+    [GX,GY]=meshgrid(1:18,1:9);
     GZ=zeros(9,18);
     best=0;
 
@@ -154,7 +153,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     x_bar = zeros(NUM_BOX, 1);
 
 
-	while success<100000
+    while success<100000
         [q_val,pre_state,pre_action,cur_state,cur_action] = get_action(x,v_x,theta,v_theta,reinf,q_val,pre_state,cur_state,pre_action,cur_action,ALPHA,BETA,GAMMA);
         
         if (cur_action==1)   % push left
@@ -168,7 +167,6 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
         theta=theta+v_theta*T;
         v_x=v_x+a_x*T;
         x=x+v_x*T;
-        m = st;
         % draw new state
         figure(h1);
         X=[x   x+cos(pi/2-theta)];
@@ -203,7 +201,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             p_before = 0;
 
             % q_val(pre_state,pre_action)= q_val(pre_state,pre_action)+ ALPHA*(reinf+ GAMMA*predicted_value - q_val(pre_state,pre_action));
-        	[pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
+            [pre_state,cur_state,pre_action,cur_action,x,v_x,theta,v_theta] = reset_cart(BETA);  % reset the cart pole to initial state
             trial=trial+1;
             if (success>best)
                 best=success;
@@ -215,11 +213,11 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             figure(h2);
             title('Q-value mesh : up is push right, bottom is push left');
             for i=1:2
-                st=1;
+                m=1;
                 for j=1:9
-                    for st=1:18
+                    for k=1:18
                         GZ(j,k)=q_val(m,i)+i;  
-                        st=st+1;
+                        m=m+1;
                     end % k
                 end  % j
                 surf(GX,GY,GZ);
@@ -231,6 +229,6 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             reinf=0;
         end  %if (box
         
-	end %while
+    end %while
     figure(h1);
     title(strcat('Success at ',num2str(trial)),' trials');
