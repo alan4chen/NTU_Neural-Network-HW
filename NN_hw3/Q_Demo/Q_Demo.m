@@ -110,6 +110,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     if (get(handles.radiobutton1,'Value')==0)
         BETA=0
     end  %if
+    st = 0;
 	m=1.1;  %mass of cart + pole 
 	mp=0.1; %mass of the pole
 	g=9.8;  %重力加速度
@@ -167,6 +168,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
         theta=theta+v_theta*T;
         v_x=v_x+a_x*T;
         x=x+v_x*T;
+        m = st;
         % draw new state
         figure(h1);
         X=[x   x+cos(pi/2-theta)];
@@ -213,11 +215,11 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
             figure(h2);
             title('Q-value mesh : up is push right, bottom is push left');
             for i=1:2
-                m=1;
+                st=1;
                 for j=1:9
-                    for k=1:18
+                    for st=1:18
                         GZ(j,k)=q_val(m,i)+i;  
-                        m=m+1;
+                        st=st+1;
                     end % k
                 end  % j
                 surf(GX,GY,GZ);
