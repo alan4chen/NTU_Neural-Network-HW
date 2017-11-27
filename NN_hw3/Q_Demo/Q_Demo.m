@@ -110,7 +110,7 @@ function varargout = pushbutton1_Callback(h, eventdata, handles, varargin)
     if (get(handles.radiobutton1,'Value')==0)
         BETA=0
     end  %if
-    st = 0;
+    st = 1.1;
 	m=1.1;  %mass of cart + pole 
 	mp=0.1; %mass of the pole
 	g=9.8;  %重力加速度
