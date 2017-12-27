@@ -70,8 +70,10 @@ class DeepQNetwork:
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 10, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 200, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
+
+            # TODO: modify n_l1
 
             # first layer. collections is used later when assign to target net
             with tf.variable_scope('l1'):
@@ -204,7 +206,10 @@ class DeepQNetwork:
         self.learn_step_counter += 1
 
     def plot_cost(self):
+        import matplotlib
+        matplotlib.use('Agg')
         import matplotlib.pyplot as plt
+
         plt.plot(np.arange(len(self.cost_his)), self.cost_his)
         plt.ylabel('Cost')
         plt.xlabel('training steps')

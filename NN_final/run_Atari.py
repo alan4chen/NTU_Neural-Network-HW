@@ -29,7 +29,7 @@ total_steps = 0
 ep_rhistory = []
 
 
-for i_episode in range(100):
+for i_episode in range(500):
 
     observation = env.reset()
     ep_r = 0
